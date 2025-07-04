@@ -10,8 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static courier.CourierGenerator.*;
-import static utils.Utils.randomString;
 import static org.junit.Assert.assertEquals;
+import static utils.Utils.randomString;
 
 public class CourierCreationTest {
 
@@ -43,8 +43,7 @@ public class CourierCreationTest {
     @DisplayName("Нельзя создать двух одинаковых курьеров, код ответа 409, 'message': 'Этот логин уже используется. Попробуйте другой.'")
     public void checkCannotCreateCourierWithSameLogin(){
         Courier courier = randomCourier();
-
-        Response response = courierClient.create(courier);
+        courierClient.create(courier);
         Courier sameLoginCourier =  new Courier()
                 .withLogin(courier.getLogin())
                 .withPassword(randomString(8))

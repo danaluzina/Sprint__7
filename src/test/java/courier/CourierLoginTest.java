@@ -1,21 +1,18 @@
 package courier;
 
+import io.qameta.allure.junit4.DisplayName;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import model.Courier;
 import model.CourierCreds;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import io.qameta.allure.junit4.DisplayName;
-import io.restassured.RestAssured;
-import courier.CourierClient;
-import org.junit.After;
-
-import static io.restassured.RestAssured.given;
-import static utils.Utils.randomString;
-import static org.junit.Assert.assertEquals;
 
 import static courier.CourierGenerator.randomCourier;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static utils.Utils.randomString;
 
 public class CourierLoginTest {
     CourierClient courierClient = new CourierClient();
@@ -31,7 +28,7 @@ public class CourierLoginTest {
     @DisplayName("Курьер может авторизоваться, успешный запрос возвращает 'id'")
     public void loginWithCorrectData() {
         Courier courier = randomCourier();
-        Response createResponse = courierClient.create(courier);
+        courierClient.create(courier);
         Response loginResponse = courierClient.login(CourierCreds.credsFrom(courier));
         id = loginResponse.body().path("id").toString();
         assertEquals("Курьер не залогинен", 200, loginResponse.statusCode());
@@ -42,7 +39,6 @@ public class CourierLoginTest {
     @DisplayName("Если нет поля 'login' запрос возвращает ошибку ")
     public void loginWithoutLoginData() {
         Courier courier = randomCourier();
-        Response createResponse = courierClient.create(courier);
         Response loginResponse = courierClient.login(CourierCreds.specificLogin(courier, null));
         assertEquals("Неправильный код ответа", 400, loginResponse.statusCode());
         assertEquals("Недостаточно данных для входа", loginResponse.body().path("message"));
@@ -51,7 +47,6 @@ public class CourierLoginTest {
     @DisplayName("Если нет поля 'password' запрос возвращает ошибку ")
     public void loginWithoutPasswordData() {
         Courier courier = randomCourier();
-        Response createResponse = courierClient.create(courier);
         Response loginResponse = courierClient.login(CourierCreds.specificPassword(courier, ""));
         assertEquals("Неправильный код ответа", 400, loginResponse.statusCode());
         assertEquals("Недостаточно данных для входа", loginResponse.body().path("message"));
@@ -61,7 +56,6 @@ public class CourierLoginTest {
     @DisplayName("Запрос с неправильным логином выдает ошибку")
     public void loginIncorrectLoginData(){
         Courier courier = randomCourier();
-        Response createResponse = courierClient.create(courier);
         Response loginResponse = courierClient.login(CourierCreds.specificLogin(courier, randomString(10)));
         assertEquals("Неправильный код ответа", 404, loginResponse.statusCode());
         assertEquals("Учетная запись не найдена", loginResponse.body().path("message"));
@@ -71,7 +65,6 @@ public class CourierLoginTest {
     @DisplayName("Запрос с неправильным паролем выдает ошибку")
     public void loginIncorrectPassword(){
         Courier courier = randomCourier();
-        Response createResponse = courierClient.create(courier);
         Response loginResponse = courierClient.login(CourierCreds.specificPassword(courier, randomString(10)));
         assertEquals("Неправильный код ответа", 404, loginResponse.statusCode());
         assertEquals("Учетная запись не найдена", loginResponse.body().path("message"));

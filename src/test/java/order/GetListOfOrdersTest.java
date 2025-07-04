@@ -2,29 +2,20 @@ package order;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import courier.CourierClient;
-import model.Order;
-import order.OrderClient;
-import order.OrderGenerator;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class GetListOfOrdersTest {
 
     private static final String BASE_URL = "https://qa-scooter.praktikum-services.ru";
-    private int courierId;
-    CourierClient courierClient = new CourierClient();
     OrderClient orderClient = new OrderClient();
-    private Order order;
-    private int orderTrack;
-    private int orderId;
+
     @Before
     public void setUp(){
         RestAssured.baseURI = BASE_URL;
-
-        Order order = OrderGenerator.getOrderNoColors();
-
     }
     @Test
     public void checkGetListOfOrders() {
